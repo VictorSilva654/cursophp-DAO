@@ -25,9 +25,16 @@ require_once("config.php");
 //$user->insert();
 //echo $user;
 
+//alterar um usuario
+//$user = new User();
+//$user->loadById(10);
+//$user->update('rodolfo', '123488');
+//echo $user;
+
 $user = new User();
-$user->loadById(10);
-$user->update('rodolfo', '123488');
+$user = new User();
+$user->loadById(1);
+$user->delete();
 echo $user;
 
 

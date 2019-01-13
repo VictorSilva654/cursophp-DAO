@@ -103,6 +103,18 @@ class User {
 		
 	}
 	
+	public function delete(){
+		$sql = new DBPrepare();
+		return $sql->query("delete from tb_usuario where id_user = :id", array(
+			":id" => $this->getIdUser()
+		));
+		
+		$this->setIdUser(0);
+		$this->setLogin("");
+		$this->setSenha(0);
+		$this->setDtcadastro(new DateTime(null));
+	}
+	
 	public static function searchByLogin($nome){
 		$sql = new DBPrepare();
 		return $sql->select("select * from tb_usuario where login like :nome order by id_user", array(
