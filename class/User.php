@@ -1,10 +1,16 @@
 <?php
 
 class User {
+		
 	private $id_user;
 	private $login;
 	private $senha;
 	private $dtcadastro;
+	
+	public function __construct($login = "", $senha = ""){
+		$this->setLogin($login);
+		$this->setSenha($senha);
+	}
 	
 	public function getIdUser(){
 		return $this->id_user;
@@ -45,27 +51,56 @@ class User {
 		));
 		
 		if (count($resultado) > 0){
-			$linha = $resultado[0];
 			
-			$this->setIdUser($linha['id_user']);
-			$this->setLogin($linha['login']);
-			$this->setSenha($linha['senha']);
-			$this->setDtcadastro(new DateTime($linha['dtcadastro']));
+			$this->setData($resultado[0]);
 		}
 	}
 	
 	public function __toString(){
-		return json_encode(array(
+			return json_encode(array(
 			"id_user" => $this->getIdUser(),
 			"login" => $this->getLogin(),
 			"senha" => $this->getSenha(),
 			"dtcadastro" => $this->getDtcadastro()->format("d-m-Y H:i")
-		));
+			));
 	}
 	
-	public static function getList(){
+	public function setData($linha){
+		$this->setIdUser($linha['id_user']);
+		$this->setLogin($linha['login']);
+		$this->setSenha($linha['senha']);
+		$this->setDtcadastro(new DateTime($linha['dtcadastro']));
+	}
+	
+	public static function getListOfUsers(){
 		$sql = new DBPrepare();
 		return $sql->select("select * from tb_usuario order by id_user");
+		
+	}
+	
+	public function insert(){
+		$sql = new DBPrepare();
+		return $sql->select("call users_insert(:login, :senha)", array(
+			":login" => $this->getLogin(),
+			":senha" => $this->getSenha()
+		));
+		if (count($resultado) > 0){
+			$this->setData($resultado[0]);
+		}
+	}
+	
+	public function update($login, $senha){
+		$this->setLogin($login);
+		$this->setSenha($senha);
+		
+		$sql = new DBPrepare();
+		
+		$sql->query("update tb_usuario set login = :login, senha = :senha where id_user = :id", array(
+			":login"=>$this->getLogin(),
+			":senha"=>$this->getSenha(),
+			":id"=>$this->getIdUser()
+		));
+		
 	}
 	
 	public static function searchByLogin($nome){
@@ -83,16 +118,13 @@ class User {
 		));
 		
 		if (count($resultado) > 0){
-			$linha = $resultado[0];
-			
-			$this->setIdUser($linha['id_user']);
-			$this->setLogin($linha['login']);
-			$this->setSenha($linha['senha']);
-			$this->setDtcadastro(new DateTime($linha['dtcadastro']));
+			$this->setData($resultado[0]);
 		} else {
-			throw new Exception ("Login ou senha inválidos");
+			throw new Exception ("Login ou senha invalidos");
 		}
 	}
+	
+	
 }
 
 ?>
