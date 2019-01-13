@@ -19,7 +19,7 @@ class DBPrepare extends PDO{
 	private function setParams($statement, $parameters = array())
 	{
 		foreach ($parameters as $key => $value ){
-			$this->setParam($key, $value);
+			$this->setParam($statement, $key, $value);
 		}//essa função é para caso a query tenha mais de um parametro
 	}
 	

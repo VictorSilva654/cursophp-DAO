@@ -2,9 +2,10 @@
 
 require_once("config.php");
 
-$sql = new DBPrepare();
+$user = new User();
 
-$user = $sql->select('Select * from tb_usuario');
+$user->loadById(3);
 
-echo json_encode($user);
+echo $user;
+
 ?>
