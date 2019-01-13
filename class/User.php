@@ -63,6 +63,36 @@ class User {
 		));
 	}
 	
+	public static function getList(){
+		$sql = new DBPrepare();
+		return $sql->select("select * from tb_usuario order by id_user");
+	}
+	
+	public static function searchByLogin($nome){
+		$sql = new DBPrepare();
+		return $sql->select("select * from tb_usuario where login like :nome order by id_user", array(
+			":nome" => "%".$nome."%"
+		));
+	}
+	
+	public function loginTester($login, $senha){
+		$sql = new DBPrepare();
+		$resultado = $sql->select("select * from tb_usuario where login = :login and senha = :senha", array(
+			":login" => $login,
+			":senha" => $senha
+		));
+		
+		if (count($resultado) > 0){
+			$linha = $resultado[0];
+			
+			$this->setIdUser($linha['id_user']);
+			$this->setLogin($linha['login']);
+			$this->setSenha($linha['senha']);
+			$this->setDtcadastro(new DateTime($linha['dtcadastro']));
+		} else {
+			throw new Exception ("Login ou senha inválidos");
+		}
+	}
 }
 
 ?>
